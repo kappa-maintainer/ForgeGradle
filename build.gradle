@@ -63,14 +63,14 @@ license {
 }
 
 tasks.named('wrapper', Wrapper).configure {
-    gradleVersion = '7.4.2'
+    gradleVersion = '8.1.1'
     distributionType = Wrapper.DistributionType.ALL
 }
 
 dependencies {
     commonImplementation gradleApi()
     commonImplementation 'commons-io:commons-io:2.8.0'
-    commonImplementation 'com.google.code.gson:gson:2.8.6'
+    commonImplementation 'com.google.code.gson:gson:2.8.9'
     commonImplementation 'com.google.guava:guava:30.1-jre'
     commonImplementation 'de.siegmar:fastcsv:2.0.0'
     commonImplementation('net.minecraftforge:artifactural:3.0.14') {
@@ -128,14 +128,22 @@ gradlePlugin {
 }
 
 publishing {
-    publications {
-        pluginMaven(MavenPublication) {
-            // Automated publishing declares the java component for us
-
-            project.changelog.publish(it)
+    repositories {
+        maven {
+            name = "outlandsReleases"
+            url = "https://maven.outlands.top/releases"
+            credentials(PasswordCredentials)
+            authentication {
+                basic(BasicAuthentication)
+            }
         }
     }
-    repositories {
-        maven gradleutils.getPublishingForgeMaven()
+    publications {
+        maven(MavenPublication) {
+            groupId = "net.minecraftforge.gradle"
+            artifactId = "ForgeGradle"
+            version = project.version
+            from components.java
+        }
     }
 }

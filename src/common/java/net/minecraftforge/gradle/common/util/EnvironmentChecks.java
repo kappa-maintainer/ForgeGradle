@@ -84,7 +84,7 @@ public class EnvironmentChecks {
             logger.debug(ENV_CHECK, "Checking Gradle version");
             checkGradleRange(
                     GradleVersion.version("7.1"),
-                    GradleVersion.version("8.0")
+                    GradleVersion.version("10.0")
             );
         } else {
             logger.debug(ENV_CHECK, "Gradle version check disabled by system property");
