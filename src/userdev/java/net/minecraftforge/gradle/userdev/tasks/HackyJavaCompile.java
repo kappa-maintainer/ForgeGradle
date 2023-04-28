@@ -9,6 +9,7 @@ import org.gradle.api.internal.tasks.compile.DefaultJavaCompileSpec;
 import org.gradle.api.internal.tasks.compile.JavaCompileSpec;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.WorkResult;
+import org.gradle.api.tasks.compile.CompileOptions;
 import org.gradle.api.tasks.compile.JavaCompile;
 import org.gradle.jvm.toolchain.JavaCompiler;
 import org.gradle.jvm.toolchain.JavaLanguageVersion;
@@ -16,6 +17,8 @@ import org.gradle.jvm.toolchain.JavaToolchainService;
 import org.gradle.language.base.internal.compile.Compiler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /*
  *  A terrible hack to use JavaCompile while bypassing
@@ -38,6 +41,7 @@ public class HackyJavaCompile extends JavaCompile {
         this.getOutputs().setPreviousOutputFiles(this.getProject().files());
         final DefaultJavaCompileSpec spec = reflectCreateSpec();
         spec.setSourceFiles(getSource());
+        spec.getCompileOptions().setCompilerArgs(Arrays.asList("--illegal-access=warn", "-Djava.security.manager=allow", "-Dfile.encoding=UTF-8", "--add-opens", "java.base/jdk.internal.loader=ALL-UNNAMED", "--add-opens", "java.base/java.net=ALL-UNNAMED", "--add-opens", "java.base/java.nio=ALL-UNNAMED", "--add-opens", "java.base/java.io=ALL-UNNAMED", "--add-opens", "java.base/java.lang=ALL-UNNAMED", "--add-opens", "java.base/java.lang.reflect=ALL-UNNAMED", "--add-opens", "java.base/java.text=ALL-UNNAMED", "--add-opens", "java.base/java.util=ALL-UNNAMED", "--add-opens", "java.base/jdk.internal.reflect=ALL-UNNAMED", "--add-opens", "java.base/sun.nio.ch=ALL-UNNAMED", "--add-opens", "jdk.naming.dns/com.sun.jndi.dns=ALL-UNNAMED,java.naming", "--add-opens", "java.desktop/sun.awt.image=ALL-UNNAMED", "--add-opens", "java.desktop/com.sun.imageio.plugins.png=ALL-UNNAMED", "--add-modules", "jdk.dynalink", "--add-opens", "jdk.dynalink/jdk.dynalink.beans=ALL-UNNAMED", "--add-modules", "java.sql.rowset", "--add-opens", "java.sql.rowset/javax.sql.rowset.serial=ALL-UNNAMED"));
         Compiler<JavaCompileSpec> compiler = createCompiler(spec);
         final WorkResult execute = compiler.execute(spec);
         setDidWork(execute.getDidWork());
