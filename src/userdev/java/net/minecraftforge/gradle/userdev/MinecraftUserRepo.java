@@ -295,8 +295,11 @@ public class MinecraftUserRepo extends BaseRepo {
         }
         deps.remove("oshi-project:oshi-core:1.1");
         deps.add("com.github.oshi:oshi-core:6.4.1");
+        System.out.println(deps);
         deps.forEach(dep -> cfg.getDependencies().add(project.getDependencies().create(dep)));
-        return cfg.resolve();
+        Set<File> set = cfg.resolve();
+        set.forEach(file -> System.out.println(file.getAbsoluteFile()));
+        return set;
     }
 
     @SuppressWarnings("unused")
