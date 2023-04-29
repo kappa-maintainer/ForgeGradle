@@ -85,16 +85,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -301,6 +293,8 @@ public class MinecraftUserRepo extends BaseRepo {
             deps.addAll(patcher.getLibraries());
             patcher = patcher.getParent();
         }
+        deps.remove("oshi-project:oshi-core:1.1");
+        deps.add("oshi-project:oshi-core:6.4.1");
         deps.forEach(dep -> cfg.getDependencies().add(project.getDependencies().create(dep)));
         return cfg.resolve();
     }
