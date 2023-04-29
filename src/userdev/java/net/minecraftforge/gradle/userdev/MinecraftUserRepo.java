@@ -285,7 +285,7 @@ public class MinecraftUserRepo extends BaseRepo {
      */
     private Set<File> buildExtraDataFiles() {
         Configuration cfg = project.getConfigurations().create(getNextTaskName("compileJava"));
-        cfg.getDependencies().remove(project.getDependencies().create("oshi-project:oshi-core:1.1"));
+        cfg.getDependencies().removeIf(dependency -> Objects.requireNonNull(dependency.getGroup()).contains("oshi-project"));
         List<String> deps = new ArrayList<>();
         deps.add("net.minecraft:client:" + mcp.getMCVersion() + ":extra");
         deps.addAll(mcp.getLibraries());

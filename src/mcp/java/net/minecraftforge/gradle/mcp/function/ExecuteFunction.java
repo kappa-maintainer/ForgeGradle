@@ -116,6 +116,7 @@ class ExecuteFunction implements MCPFunction {
         // Instead use a launcher compatible with the version required by MCP.
         JavaToolchainService toolchainService = environment.project.getExtensions().getByType(JavaToolchainService.class);
         JavaLanguageVersion toolchainVersion = this.javaVersion != null ? JavaLanguageVersion.of(this.javaVersion) : environment.getJavaVersion();
+        System.out.println(toolchainVersion.asInt());
         String launcher = toolchainService.launcherFor(spec -> spec.getLanguageVersion().set(toolchainVersion))
                 .get()
                 .getExecutablePath()
