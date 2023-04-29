@@ -294,11 +294,13 @@ public class MinecraftUserRepo extends BaseRepo {
             patcher = patcher.getParent();
         }
         deps.remove("oshi-project:oshi-core:1.1");
-        cfg.getDependencies().remove(project.getDependencies().create("oshi-project:oshi-core:1.1"));
-        System.out.println(cfg.getDependencies());
         deps.forEach(dep -> cfg.getDependencies().add(project.getDependencies().create(dep)));
         Set<File> set = cfg.resolve();
-        set.forEach(file -> System.out.println(file.getAbsoluteFile()));
+        set.forEach(file -> {
+            if (file.getName().contains("oshi-core-1.1.jar")) {
+                set.remove(file);
+            }
+        });
         return set;
     }
 
