@@ -132,9 +132,9 @@ public class UserDevPlugin implements Plugin<Project> {
             task.setReverse(false);
             task.getSrg().set(extractSrg.flatMap(ExtractMCPData::getOutput));
             task.getMappings().set(extension.getMappings());
-            task.getFormat().set(IMappingFile.Format.SRG);
+            task.getFormat().set(IMappingFile.Format.TSRG2);
             task.getOutput().set(project.getLayout().getBuildDirectory()
-                    .dir(task.getName()).map(s -> s.file("output.srg")));
+                    .dir(task.getName()).map(s -> s.file("output.tsrg")));
         });
 
         createMcpToSrg.configure(task -> {
