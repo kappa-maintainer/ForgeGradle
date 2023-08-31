@@ -85,17 +85,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -294,6 +285,7 @@ public class MinecraftUserRepo extends BaseRepo {
      */
     private Set<File> buildExtraDataFiles() {
         Configuration cfg = project.getConfigurations().create(getNextTaskName("compileJava"));
+        cfg.getDependencies().removeIf(dependency -> Objects.requireNonNull(dependency.getGroup()).contains("oshi-project"));
         List<String> deps = new ArrayList<>();
         deps.add("net.minecraft:client:" + mcp.getMCVersion() + ":extra");
         deps.addAll(mcp.getLibraries());
@@ -302,8 +294,11 @@ public class MinecraftUserRepo extends BaseRepo {
             deps.addAll(patcher.getLibraries());
             patcher = patcher.getParent();
         }
+        deps.remove("oshi-project:oshi-core:1.1");
         deps.forEach(dep -> cfg.getDependencies().add(project.getDependencies().create(dep)));
-        return cfg.resolve();
+        Set<File> set = cfg.resolve().stream().filter(file -> !file.getName().contains("oshi-core-1.1.jar")).collect(Collectors.toSet());
+        set.forEach(file -> System.out.println(file.getAbsoluteFile()));
+        return set;
     }
 
     @SuppressWarnings("unused")

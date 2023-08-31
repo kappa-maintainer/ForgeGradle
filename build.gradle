@@ -128,14 +128,22 @@ gradlePlugin {
 }
 
 publishing {
-    publications {
-        pluginMaven(MavenPublication) {
-            // Automated publishing declares the java component for us
-
-            project.changelog.publish(it)
+    repositories {
+        maven {
+            name = "outlandsReleases"
+            url = "https://maven.outlands.top/releases"
+            credentials(PasswordCredentials)
+            authentication {
+                basic(BasicAuthentication)
+            }
         }
     }
-    repositories {
-        maven gradleutils.getPublishingForgeMaven()
+    publications {
+        maven(MavenPublication) {
+            groupId = "net.minecraftforge.gradle"
+            artifactId = "ForgeGradle"
+            version = project.version
+            from components.java
+        }
     }
 }

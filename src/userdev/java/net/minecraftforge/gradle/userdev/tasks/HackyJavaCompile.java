@@ -17,6 +17,7 @@ import org.gradle.jvm.toolchain.JavaToolchainService;
 import org.gradle.language.base.internal.compile.Compiler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 /*
  *  A terrible hack to use JavaCompile while bypassing
@@ -40,6 +41,7 @@ public class HackyJavaCompile extends JavaCompile {
         this.getOutputs().setPreviousOutputFiles(this.getProject().files());
         final DefaultJavaCompileSpec spec = reflectCreateSpec();
         spec.setSourceFiles(getSource());
+        spec.getCompileOptions().setCompilerArgs(Arrays.asList("--add-exports", "java.base/jdk.internal.loader=ALL-UNNAMED", "--add-exports", "java.base/java.net=ALL-UNNAMED", "--add-exports", "java.base/java.nio=ALL-UNNAMED", "--add-exports", "java.base/java.io=ALL-UNNAMED", "--add-exports", "java.base/java.lang=ALL-UNNAMED", "--add-exports", "java.base/java.lang.reflect=ALL-UNNAMED", "--add-exports", "java.base/java.text=ALL-UNNAMED", "--add-exports", "java.base/java.util=ALL-UNNAMED", "--add-exports", "java.base/jdk.internal.reflect=ALL-UNNAMED", "--add-exports", "java.base/sun.nio.ch=ALL-UNNAMED", "--add-exports", "java.base/jdk.internal.misc=ALL-UNNAMED", "--add-exports", "java.desktop/sun.awt.image=ALL-UNNAMED", "--add-exports", "java.desktop/com.sun.imageio.plugins.png=ALL-UNNAMED", "--add-modules", "jdk.dynalink", "--add-exports", "jdk.dynalink/jdk.dynalink.beans=ALL-UNNAMED", "--add-modules", "java.sql.rowset", "--add-exports", "java.sql.rowset/javax.sql.rowset.serial=ALL-UNNAMED"));
         Compiler<JavaCompileSpec> compiler = createCompiler(spec);
         final WorkResult execute = compiler.execute(spec);
         setDidWork(execute.getDidWork());
