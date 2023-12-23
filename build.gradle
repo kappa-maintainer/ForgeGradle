@@ -9,11 +9,11 @@ plugins {
 
 version = gradleutils.getTagOffsetBranchVersion('FG_6.0')
 logger.lifecycle('Version: ' + version + ' Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
-
+/*
 changelog {
     fromTag '6.0'
     disableAutomaticPublicationRegistration()
-}
+}*/
 sourceSets {
     common
     mcp
@@ -83,7 +83,7 @@ dependencies {
     commonImplementation 'org.apache.maven:maven-artifact:3.9.1'
     commonImplementation 'org.apache.httpcomponents:httpclient:4.5.14'
     commonImplementation 'net.minecraftforge:srgutils:0.5.3'
-    commonImplementation 'net.minecraftforge:DiffPatch:2.1.0.2:fat'
+    commonImplementation 'net.minecraftforge:DiffPatch:2.1.1:all'
 
     mcpImplementation sourceSets.common.output
     patcherImplementation sourceSets.mcp.output
