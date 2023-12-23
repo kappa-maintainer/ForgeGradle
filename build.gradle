@@ -53,6 +53,7 @@ tasks.named('sourcesJar', Jar).configure {
 repositories {
     mavenLocal()
     maven { url = 'https://maven.minecraftforge.net/' }
+    maven { url = 'https://maven.outlands.top/releases/' }
 }
 
 license {
@@ -63,7 +64,7 @@ license {
 }
 
 tasks.named('wrapper', Wrapper).configure {
-    gradleVersion = '8.4'
+    gradleVersion = '8.5'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -82,7 +83,7 @@ dependencies {
     commonImplementation 'org.apache.maven:maven-artifact:3.9.1'
     commonImplementation 'org.apache.httpcomponents:httpclient:4.5.14'
     commonImplementation 'net.minecraftforge:srgutils:0.5.3'
-    commonImplementation 'net.minecraftforge:DiffPatch:2.0.12:all'
+    commonImplementation 'net.minecraftforge:DiffPatch:2.1.0.2:fat'
 
     mcpImplementation sourceSets.common.output
     patcherImplementation sourceSets.mcp.output
