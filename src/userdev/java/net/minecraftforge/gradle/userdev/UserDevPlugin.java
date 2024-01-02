@@ -225,9 +225,6 @@ public class UserDevPlugin implements Plugin<Project> {
             MinecraftUserRepo mcrepo = null;
 
             DependencySet mcDependencies = minecraft.getDependencies();
-            for (String sub : lwjglPackage) {
-                mcDependencies.add(new DefaultExternalModuleDependency("org.lwjgl3", sub, "3.3.4-27-CLEANROOM:" + getCurrentArch()));
-            }
             for (Dependency dep : new ArrayList<>(mcDependencies)) { // Copied to new list to avoid ConcurrentModificationException
                 if (!(dep instanceof ExternalModuleDependency)) {
                     throw new IllegalArgumentException(minecraft.getName() + " configuration must contain a Maven dependency");
@@ -312,7 +309,9 @@ public class UserDevPlugin implements Plugin<Project> {
             } catch (IOException e) {
                 project.getLogger().warn("Failed to retrieve asset index ID", e);
             }
-
+            for (String sub : lwjglPackage) {
+                project.getDependencies().add("runtimeOnly", "org.lwjgl3" + sub + "3.3.4-27-CLEANROOM:" + getCurrentArch());
+            }
             // Finalize asset index
             final String finalAssetIndex = assetIndex;
 
