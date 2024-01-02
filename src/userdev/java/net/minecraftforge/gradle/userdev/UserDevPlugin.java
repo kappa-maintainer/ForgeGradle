@@ -310,7 +310,7 @@ public class UserDevPlugin implements Plugin<Project> {
                 project.getLogger().warn("Failed to retrieve asset index ID", e);
             }
             for (String sub : lwjglPackage) {
-                project.getDependencies().add("runtimeOnly", "org.lwjgl3" + sub + "3.3.4-27-CLEANROOM:" + getCurrentArch());
+                project.getDependencies().add("runtimeOnly", "org.lwjgl3:" + sub + ":3.3.4-27-CLEANROOM:" + getCurrentArch());
             }
             // Finalize asset index
             final String finalAssetIndex = assetIndex;
