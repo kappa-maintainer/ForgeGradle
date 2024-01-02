@@ -297,7 +297,7 @@ public class MinecraftUserRepo extends BaseRepo {
         }
         deps.forEach(dep -> cfg.getDependencies().add(project.getDependencies().create(dep)));
         Set<File> set = cfg.resolve().stream().filter(file -> !file.getName().contains("oshi-core-1.1.jar")).collect(Collectors.toSet());
-        set.forEach(file -> System.out.println(file.getAbsoluteFile()));
+        set.forEach(file -> log.debug(file.getAbsoluteFile().getAbsolutePath()));
         return set;
     }
 
