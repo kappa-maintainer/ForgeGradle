@@ -44,6 +44,10 @@ import org.gradle.api.artifacts.ExternalModuleDependency;
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository.MetadataSources;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.SourceDirectorySet;
+import org.gradle.api.internal.artifacts.dependencies.DefaultClientModule;
+import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency;
+import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency;
+import org.gradle.api.internal.project.DefaultProject;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginExtension;
@@ -59,6 +63,9 @@ import org.gradle.language.base.plugins.LifecycleBasePlugin;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
@@ -76,6 +83,8 @@ public class UserDevPlugin implements Plugin<Project> {
     public static final String MINECRAFT_EMBED_CONFIGURATION_NAME = "minecraftEmbed";
 
     private static final String DISABLE_DEFAULT_CONFIGS_PROP = "net.minecraftforge.gradle.disableDefaultMinecraftConfigurations";
+    private static final List<String> lwjglPackage = Arrays.asList("lwjgl3-glfw", "lwjgl3-jemalloc", "lwjgl3-openal", "lwjgl3-opengl", "lwjgl3-stb", "lwjgl3-tinyfd", "lwjgl3");
+    private static final List<String> lwjglArch = Arrays.asList("natives-linux-arm64", "natives-linux-arm32", "natives-linux", "natives-macos-arm64", "natives-macos", "natives-windows-arm64", "natives-windows-x86", "natives-windows");
 
     @SuppressWarnings("unchecked")
     @Override
@@ -216,6 +225,9 @@ public class UserDevPlugin implements Plugin<Project> {
             MinecraftUserRepo mcrepo = null;
 
             DependencySet mcDependencies = minecraft.getDependencies();
+            for (String sub : lwjglPackage) {
+                mcDependencies.add(new DefaultExternalModuleDependency("org.lwjgl3", sub, "3.3.4-27-CLEANROOM:" + getCurrentArch()));
+            }
             for (Dependency dep : new ArrayList<>(mcDependencies)) { // Copied to new list to avoid ConcurrentModificationException
                 if (!(dep instanceof ExternalModuleDependency)) {
                     throw new IllegalArgumentException(minecraft.getName() + " configuration must contain a Maven dependency");
@@ -359,6 +371,26 @@ public class UserDevPlugin implements Plugin<Project> {
         });
 
         project.getArtifacts().add(JAR_JAR_DEFAULT_CONFIGURATION_NAME, project.getTasks().named(JAR_JAR_TASK_NAME));
+    }
+
+    private String getCurrentArch() {
+        String osName = System.getProperty("os.name").toLowerCase();
+        if (osName.contains("linux")) {
+            String osArch = System.getProperty("os.arch");
+            return osArch.startsWith("arm") || osArch.startsWith("aarch64")
+                    ? "natives-linux-" + (osArch.contains("64") || osArch.startsWith("armv8") ? "arm64" : "arm32")
+                : "natives-linux";
+        }
+        if (osName.contains("mac os x") || osName.contains("darwin") || osName.contains("osx")) {
+            return System.getProperty("os.arch").startsWith("aarch64") ? "natives-macos-arm64" : "natives-macos";
+        }
+        if (osName.contains("windows")) {
+            String osArch = System.getProperty("os.arch");
+            return osArch.contains("64")
+                    ? "natives-windows" + (osArch.startsWith("aarch64") ? "-arm64" : "")
+                : "natives-windows-x86";
+        }
+        throw new RuntimeException("OS not supported");
     }
 
 }
