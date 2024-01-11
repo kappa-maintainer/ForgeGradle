@@ -158,7 +158,7 @@ public class Utils {
 
     public static Path getCacheBase(Project project) {
         File gradleUserHomeDir = project.getGradle().getGradleUserHomeDir();
-        return Paths.get(gradleUserHomeDir.getPath(), "caches", "forge_gradle");
+        return Paths.get(gradleUserHomeDir.getPath(), "caches", "cleanroom_gradle");
     }
 
     public static File getCache(Project project, String... tail) {
