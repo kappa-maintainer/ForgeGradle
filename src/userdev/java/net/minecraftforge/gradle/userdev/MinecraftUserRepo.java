@@ -286,7 +286,7 @@ public class MinecraftUserRepo extends BaseRepo {
      */
     private Set<File> buildExtraDataFiles() {
         Configuration cfg = project.getConfigurations().create(getNextTaskName("compileJava"));
-        cfg.getDependencies().removeIf(dependency -> Objects.requireNonNull(dependency.getGroup()).contains("oshi-project"));
+        cfg.getDependencies().removeIf(dependency -> Objects.requireNonNull(dependency.getGroup()).contains("oshi-project") || dependency.getName().equals("icu4j-core-mojang"));
         List<String> deps = new ArrayList<>();
         deps.add("net.minecraft:client:" + mcp.getMCVersion() + ":extra");
         deps.addAll(mcp.getLibraries());
@@ -296,8 +296,8 @@ public class MinecraftUserRepo extends BaseRepo {
             patcher = patcher.getParent();
         }
         deps.forEach(dep -> cfg.getDependencies().add(project.getDependencies().create(dep)));
-        Set<File> set = cfg.resolve().stream().filter(file -> !file.getName().contains("oshi-core-1.1.jar")).collect(Collectors.toSet());
-        set.forEach(file -> log.debug(file.getAbsoluteFile().getAbsolutePath()));
+        Set<File> set = cfg.resolve().stream().filter(file -> !file.getName().contains("oshi-core-1.1.jar") && !file.getName().contains("icu4j-core-mojang-51.2.jar")).collect(Collectors.toSet());
+        //set.forEach(file -> log.debug(file.getAbsoluteFile().getAbsolutePath()));
         return set;
     }
 
