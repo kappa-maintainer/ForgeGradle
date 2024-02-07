@@ -66,6 +66,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
@@ -225,6 +226,7 @@ public class UserDevPlugin implements Plugin<Project> {
             MinecraftUserRepo mcrepo = null;
 
             DependencySet mcDependencies = minecraft.getDependencies();
+            mcDependencies.removeIf(dependency -> Objects.requireNonNull(dependency.getGroup()).contains("oshi-project") || dependency.getName().contains("icu4j-core-mojang"));
             for (Dependency dep : new ArrayList<>(mcDependencies)) { // Copied to new list to avoid ConcurrentModificationException
                 if (!(dep instanceof ExternalModuleDependency)) {
                     throw new IllegalArgumentException(minecraft.getName() + " configuration must contain a Maven dependency");
