@@ -247,9 +247,9 @@ public class UserDevPlugin implements Plugin<Project> {
                     ext.setChanging(true);
                 }
                 minecraft.resolutionStrategy(strat -> strat.cacheChangingModulesFor(10, TimeUnit.SECONDS));
-
                 minecraft.getDependencies().add(ext);
             }
+            minecraft.getDependencies().removeIf(dependency -> Objects.requireNonNull(dependency.getGroup()).contains("oshi-project") || dependency.getName().contains("icu4j-core-mojang"));
             if (mcrepo == null) {
                 if (project.getState().getFailure() != null)
                     return; // If we throw another exception, it just becomes more confusing
@@ -315,12 +315,6 @@ public class UserDevPlugin implements Plugin<Project> {
             for (String sub : lwjglPackage) {
                 project.getDependencies().add("runtimeOnly", "org.lwjgl3:" + sub + ":3.3.4-27-CLEANROOM:" + getCurrentArch());
             }
-            project.getConfigurations().forEach(conf -> {
-                HashMap<String, String> map = new HashMap<>();
-                map.put("oshi-project","oshi-core");
-                map.put("com.ibm.icu", "icu4j-core-mojang");
-                conf.exclude(map);
-            });
             // Finalize asset index
             final String finalAssetIndex = assetIndex;
 
