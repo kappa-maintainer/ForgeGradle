@@ -290,6 +290,8 @@ public class MinecraftUserRepo extends BaseRepo {
         List<String> deps = new ArrayList<>();
         deps.add("net.minecraft:client:" + mcp.getMCVersion() + ":extra");
         deps.addAll(mcp.getLibraries());
+        deps.remove("oshi-project:oshi-core:1.1");
+        deps.remove("com.ibm.icu:icu4j-core-mojang:51.2");
         Patcher patcher = parent;
         while (patcher != null) {
             deps.addAll(patcher.getLibraries());
@@ -297,7 +299,7 @@ public class MinecraftUserRepo extends BaseRepo {
         }
         deps.forEach(dep -> cfg.getDependencies().add(project.getDependencies().create(dep)));
         Set<File> set = cfg.resolve().stream().filter(file -> !file.getName().contains("oshi-core-1.1.jar") && !file.getName().contains("icu4j-core-mojang-51.2.jar")).collect(Collectors.toSet());
-        //set.forEach(file -> log.debug(file.getAbsoluteFile().getAbsolutePath()));
+        set.forEach(file -> log.debug(file.getAbsoluteFile().getAbsolutePath()));
         return set;
     }
 
