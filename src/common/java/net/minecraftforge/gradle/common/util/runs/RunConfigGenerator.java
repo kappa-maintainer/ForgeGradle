@@ -144,9 +144,17 @@ public abstract class RunConfigGenerator {
         Map<String, Supplier<String>> tokens = new HashMap<>();
         runConfig.getTokens().forEach((k, v) -> tokens.put(k, () -> v));
         runConfig.getLazyTokens().forEach((k, v) -> tokens.put(k, Suppliers.memoize(v::get)));
-        tokens.compute("source_roots", (key, sourceRoots) -> Suppliers.memoize(() -> ((sourceRoots != null)
-                ? Stream.concat(Arrays.stream(sourceRoots.get().split(File.pathSeparator)), modClasses)
-                : modClasses).distinct().collect(Collectors.joining(File.pathSeparator))));
+        tokens.compute("source_roots", (k, v) -> {
+        	Stream<String> paths;
+        	if (v == null)
+        		paths = modClasses;
+        	else {
+        		String[] existing = v.get().split(File.pathSeparator);
+        		paths = Stream.concat(Arrays.stream(existing), modClasses);
+        	}
+
+        	return Suppliers.memoize(() -> paths.distinct().collect(Collectors.joining(File.pathSeparator)));
+        });
 
         Supplier<String> runtimeClasspath = tokens.compute("runtime_classpath", makeClasspathToken(runtimeClasspathArtifacts));
         Supplier<String> minecraftClasspath = tokens.compute("minecraft_classpath", makeClasspathToken(minecraftArtifacts));
@@ -314,22 +322,48 @@ public abstract class RunConfigGenerator {
         protected abstract JsonObject createRunConfiguration(final Project project, final RunConfig runConfig, List<String> additionalClientArgs,
                 FileCollection minecraftArtifacts, FileCollection runtimeClasspathArtifacts);
 
+        protected abstract JsonObject createPrepareTaskConfiguration(final Project project, final RunConfig runConfig);
+
         @Override
-        public final void createRunConfiguration(final MinecraftExtension minecraft, final File runConfigurationsDir, final Project project,
-                List<String> additionalClientArgs, FileCollection minecraftArtifacts, FileCollection runtimeClasspathArtifacts) {
-            final JsonObject rootObject = new JsonObject();
-            rootObject.addProperty("version", "0.2.0");
+        public final void createRunConfiguration(final MinecraftExtension minecraft, final File runConfigurationsDir,
+                final Project project,
+                List<String> additionalClientArgs, FileCollection minecraftArtifacts,
+                FileCollection runtimeClasspathArtifacts) {
+
+            final JsonObject runObject = new JsonObject();
+            runObject.addProperty("version", "0.2.0");
             JsonArray runConfigs = new JsonArray();
             minecraft.getRuns().forEach(runConfig -> {
                 MinecraftRunTask.prepareWorkingDirectory(runConfig);
 
-                runConfigs.add(createRunConfiguration(project, runConfig, additionalClientArgs, minecraftArtifacts, runtimeClasspathArtifacts));
+                runConfigs.add(createRunConfiguration(project, runConfig,
+                        additionalClientArgs, minecraftArtifacts,
+                        runtimeClasspathArtifacts));
             });
-            rootObject.add("configurations", runConfigs);
+            runObject.add("configurations", runConfigs);
 
-            try (Writer writer = new FileWriter(new File(runConfigurationsDir, "launch.json"))) {
+            try (Writer writer = new FileWriter(new File(runConfigurationsDir,
+                    "launch.json"))) {
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                writer.write(gson.toJson(rootObject));
+                writer.write(gson.toJson(runObject));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            final JsonObject prepareObject = new JsonObject();
+            prepareObject.addProperty("version", "2.0.0");
+            JsonArray prepareConfigs = new JsonArray();
+            minecraft.getRuns().forEach(runConfig -> {
+                MinecraftRunTask.prepareWorkingDirectory(runConfig);
+
+                prepareConfigs.add(createPrepareTaskConfiguration(project, runConfig));
+            });
+            prepareObject.add("tasks", prepareConfigs);
+
+            try (Writer writer = new FileWriter(new File(runConfigurationsDir,
+                    "tasks.json"))) {
+                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                writer.write(gson.toJson(prepareObject));
             } catch (IOException e) {
                 e.printStackTrace();
             }
