@@ -238,7 +238,7 @@ public class UserDevPlugin implements Plugin<Project> {
                 mcDependencies.remove(dep);
 
                 mcrepo = new MinecraftUserRepo(p, dep.getGroup(), dep.getName(), dep.getVersion(), new ArrayList<>(extension.getAccessTransformers().getFiles()), extension.getMappings().get());
-                fgExtension.getRepository().content(content -> content.excludeModule(dep.getGroup(), dep.getName())); // This is annoying but the content filter of the deobf repo does match the MC dependency
+                //fgExtension.getRepository().content(content -> content.excludeModule(dep.getGroup(), dep.getName())); // This is annoying but the content filter of the deobf repo does match the MC dependency
                 String newDep = mcrepo.getDependencyString();
                 //p.getLogger().lifecycle("New Dep: " + newDep);
                 ExternalModuleDependency ext = (ExternalModuleDependency) p.getDependencies().create(newDep);
