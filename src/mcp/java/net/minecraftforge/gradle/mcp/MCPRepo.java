@@ -275,9 +275,11 @@ public class MCPRepo extends BaseRepo {
             wrapper.getConfig().getLibraries(side).forEach(e -> builder.dependencies().add(e, "compile"));
             builder.dependencies().removeIf(e -> e.getGroup().equals("com.ibm.icu") && e.getName().equals("icu4j-core-mojang"));
             builder.dependencies().removeIf(e -> e.getGroup().equals("oshi-project") && e.getName().equals("oshi-core"));
+            /*
             builder.dependencies().removeIf(e -> e.getGroup().equals("org.lwjgl.lwjgl"));
             builder.dependencies().removeIf(e -> e.getGroup().equals("io.netty") && e.getName().equals("netty-all"));
             builder.dependencies().removeIf(e -> e.getGroup().equals("com.mojang") && e.getName().equals("patchy"));
+            */
             String ret = builder.tryBuild();
             if (ret == null)
                 return null;
