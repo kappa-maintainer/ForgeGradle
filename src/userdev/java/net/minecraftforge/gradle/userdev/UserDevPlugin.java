@@ -293,7 +293,13 @@ public class UserDevPlugin implements Plugin<Project> {
             downloadMCMeta.configure(t -> t.getMCVersion().convention(mcVer));
 
             // Register reobfJar for the 'jar' task
-            reobfExtension.create(JavaPlugin.JAR_TASK_NAME);
+            if (extension.getReobf()) {
+            	reobfExtension.create(JavaPlugin.JAR_TASK_NAME);
+    	        project.getTasks().withType(JarJar.class).all(jarJar -> {
+    	            logger.info("Creating reobfuscation task for JarJar task: {}", jarJar.getName());
+    	            reobfExtension.create(jarJar.getName()).setOnlyIf(task -> jarJar.isEnabled());
+    	        });
+            }
 
             String assetIndex = mcVer;
 
@@ -322,10 +328,6 @@ public class UserDevPlugin implements Plugin<Project> {
             if (extension.getCopyIdeResources().get() == Boolean.TRUE)
                 Utils.setupIDEResourceCopy(project); // We need to have the copy resources task BEFORE the run config ones so we can detect them
             Utils.createRunConfigTasks(extension, extractNatives, downloadAssets, createSrgToMcp);
-        });
-        project.getTasks().withType(JarJar.class).all(jarJar -> {
-            logger.info("Creating reobfuscation task for JarJar task: {}", jarJar.getName());
-            reobfExtension.create(jarJar.getName()).setOnlyIf(task -> jarJar.isEnabled());
         });
     }
 

@@ -14,7 +14,17 @@ import javax.annotation.Nonnull;
 public abstract class UserDevExtension extends MinecraftExtension {
     public static final String EXTENSION_NAME = "minecraft";
 
+    private boolean reobf = true;
+
     public UserDevExtension(@Nonnull final Project project) {
         super(project);
+    }
+
+    public void setReobf(boolean value) {
+    	this.reobf = false;
+    }
+
+    public boolean getReobf() {
+    	return this.reobf;
     }
 }
