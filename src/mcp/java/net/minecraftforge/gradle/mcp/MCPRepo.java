@@ -273,7 +273,7 @@ public class MCPRepo extends BaseRepo {
 
             MCPWrapper wrapper = getWrapper(version, mcp);
             wrapper.getConfig().getLibraries(side).forEach(e -> builder.dependencies().add(e, "compile"));
-
+            builder.dependencies().removeIf(e -> e.getGroup().equals("com.ibm.icu")&& e.getName().equals("icu4j-core-mojang"));
             String ret = builder.tryBuild();
             if (ret == null)
                 return null;
