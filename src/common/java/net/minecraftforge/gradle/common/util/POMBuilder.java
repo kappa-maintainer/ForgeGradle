@@ -12,6 +12,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -127,7 +128,7 @@ public class POMBuilder {
         parent.appendChild(description);
     }
 
-    public class Dependencies {
+    public static class Dependencies {
 
         private final Set<Dependency> dependencies = new LinkedHashSet<>();
 
@@ -155,7 +156,11 @@ public class POMBuilder {
             return dep;
         }
 
-        public class Dependency {
+        public void removeIf(Predicate<Dependency> predicate) {
+            dependencies.removeIf(predicate);
+        }
+
+        public static class Dependency {
             private final String group, name, version;
             @Nullable
             private String classifier, extension, scope;
@@ -172,6 +177,18 @@ public class POMBuilder {
 
             public void withClassifier(@Nullable String classifier) {
                 this.classifier = classifier;
+            }
+
+            public String getGroup() {
+                return group;
+            }
+
+            public String getVersion() {
+                return version;
+            }
+
+            public String getName() {
+                return name;
             }
         }
 
