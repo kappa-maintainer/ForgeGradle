@@ -227,7 +227,6 @@ public class UserDevPlugin implements Plugin<Project> {
             MinecraftUserRepo mcrepo = null;
 
             DependencySet mcDependencies = minecraft.getDependencies();
-            mcDependencies.removeIf(dependency -> Objects.requireNonNull(dependency.getGroup()).contains("oshi-project") || dependency.getName().contains("icu4j-core-mojang"));
             for (Dependency dep : new ArrayList<>(mcDependencies)) { // Copied to new list to avoid ConcurrentModificationException
                 if (!(dep instanceof ExternalModuleDependency)) {
                     throw new IllegalArgumentException(minecraft.getName() + " configuration must contain a Maven dependency");
@@ -238,7 +237,7 @@ public class UserDevPlugin implements Plugin<Project> {
                 mcDependencies.remove(dep);
 
                 mcrepo = new MinecraftUserRepo(p, dep.getGroup(), dep.getName(), dep.getVersion(), new ArrayList<>(extension.getAccessTransformers().getFiles()), extension.getMappings().get());
-                //fgExtension.getRepository().content(content -> content.excludeModule(dep.getGroup(), dep.getName())); // This is annoying but the content filter of the deobf repo does match the MC dependency
+                fgExtension.getRepository().content(content -> content.excludeModule(dep.getGroup(), dep.getName())); // This is annoying but the content filter of the deobf repo does match the MC dependency
                 String newDep = mcrepo.getDependencyString();
                 //p.getLogger().lifecycle("New Dep: " + newDep);
                 ExternalModuleDependency ext = (ExternalModuleDependency) p.getDependencies().create(newDep);
@@ -249,7 +248,6 @@ public class UserDevPlugin implements Plugin<Project> {
                 minecraft.resolutionStrategy(strat -> strat.cacheChangingModulesFor(10, TimeUnit.SECONDS));
                 minecraft.getDependencies().add(ext);
             }
-            minecraft.getDependencies().removeIf(dependency -> Objects.requireNonNull(dependency.getGroup()).contains("oshi-project") || dependency.getName().contains("icu4j-core-mojang"));
             if (mcrepo == null) {
                 if (project.getState().getFailure() != null)
                     return; // If we throw another exception, it just becomes more confusing
