@@ -124,7 +124,7 @@ class ExecuteFunction implements MCPFunction {
 
         // Execute command
         try (BufferedOutputStream log_out = new BufferedOutputStream(new FileOutputStream(environment.getFile("console.log")))) {
-            environment.project.javaexec(java -> {
+            environment.project.getProviders().javaexec(java -> {
                 PrintWriter writer = new PrintWriter(log_out);
                 Function<String, String> quote = s -> '"' + s + '"';
                 writer.println("JVM:         " + launcher);
@@ -141,7 +141,7 @@ class ExecuteFunction implements MCPFunction {
                 java.setWorkingDir(workingDir);
                 java.getMainClass().set(mainClass);
                 java.setStandardOutput(log_out);
-            }).rethrowFailure().assertNormalExitValue();
+            }).getResult().get().rethrowFailure().assertNormalExitValue();
         }
 
         // Return the output file

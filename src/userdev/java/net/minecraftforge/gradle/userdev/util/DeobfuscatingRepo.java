@@ -110,7 +110,7 @@ public class DeobfuscatingRepo extends BaseRepo {
     }
 
     private Optional<File> findArtifactFile(Artifact artifact) {
-        Stream<ResolvedDependency> deps = getResolvedOrigin().getFirstLevelModuleDependencies(artifact.asDependencySpec()).stream();
+        Stream<ResolvedDependency> deps = getResolvedOrigin().getFirstLevelModuleDependencies().stream();
         return deps.flatMap(
                 d -> d.getModuleArtifacts().stream()
                         .filter(artifact.asArtifactMatcher())

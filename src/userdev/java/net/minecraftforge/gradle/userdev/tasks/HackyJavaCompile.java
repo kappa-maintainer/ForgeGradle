@@ -5,12 +5,22 @@
 
 package net.minecraftforge.gradle.userdev.tasks;
 
+import org.gradle.api.file.ProjectLayout;
+import org.gradle.api.internal.provider.PropertyFactory;
 import org.gradle.api.internal.tasks.compile.DefaultJavaCompileSpec;
 import org.gradle.api.internal.tasks.compile.JavaCompileSpec;
+import org.gradle.api.internal.tasks.compile.incremental.IncrementalCompilerFactory;
+import org.gradle.api.model.ObjectFactory;
+import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
+import org.gradle.api.provider.ProviderFactory;
 import org.gradle.api.tasks.CacheableTask;
 import org.gradle.api.tasks.WorkResult;
+import org.gradle.api.tasks.compile.CompileOptions;
 import org.gradle.api.tasks.compile.JavaCompile;
+import org.gradle.api.tasks.util.internal.PatternSetFactory;
+import org.gradle.internal.file.Deleter;
+import org.gradle.internal.jvm.JavaModuleDetector;
 import org.gradle.jvm.toolchain.JavaCompiler;
 import org.gradle.jvm.toolchain.JavaLanguageVersion;
 import org.gradle.jvm.toolchain.JavaToolchainService;
@@ -25,7 +35,7 @@ import java.lang.reflect.Method;
  *  It can and will be removed if we get a better way to do this.
  */
 @CacheableTask
-public class HackyJavaCompile extends JavaCompile {
+public abstract class HackyJavaCompile extends JavaCompile {
 
     public void doHackyCompile() {
 

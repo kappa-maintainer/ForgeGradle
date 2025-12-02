@@ -2,7 +2,7 @@ plugins {
     id 'java-gradle-plugin'
     id 'eclipse'
     id 'maven-publish'
-    id 'net.minecraftforge.licenser' version '1.0.1'
+    id 'net.minecraftforge.licenser' version '1.2.0'
     id 'net.minecraftforge.gradleutils' version '[2.3,2.4)'
     id 'com.github.ben-manes.versions' version '0.46.0'
 }
@@ -63,15 +63,16 @@ license {
 }
 
 tasks.named('wrapper', Wrapper).configure {
-    gradleVersion = '8.4'
+    gradleVersion = '9.2'
     distributionType = Wrapper.DistributionType.ALL
 }
 
 dependencies {
     commonImplementation gradleApi()
-    commonImplementation 'commons-io:commons-io:2.11.0'
-    commonImplementation 'com.google.code.gson:gson:2.10.1'
-    commonImplementation 'com.google.guava:guava:31.1-jre'
+    commonImplementation 'commons-io:commons-io:2.21.0'
+    commonImplementation 'org.apache.commons:commons-lang3:3.20.0'
+    commonImplementation 'com.google.code.gson:gson:2.13.2'
+    commonImplementation 'com.google.guava:guava:33.5.0-jre'
     commonImplementation 'de.siegmar:fastcsv:2.2.1'
     commonImplementation('net.minecraftforge:artifactural:3.0.20') {
         transitive = false
@@ -79,8 +80,8 @@ dependencies {
     commonImplementation('net.minecraftforge:unsafe:0.2.0') {
         transitive = false
     }
-    commonImplementation 'org.apache.maven:maven-artifact:3.9.1'
-    commonImplementation 'org.apache.httpcomponents:httpclient:4.5.14'
+    commonImplementation 'org.apache.maven:maven-artifact:3.9.11'
+    commonImplementation 'org.apache.httpcomponents.core5:httpcore5:5.3.6'
     commonImplementation 'net.minecraftforge:srgutils:0.5.10'
     commonImplementation 'net.minecraftforge:DiffPatch:2.0.12:all'
 

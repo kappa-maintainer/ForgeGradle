@@ -114,7 +114,7 @@ public abstract class JarExec extends DefaultTask {
         final File workingDirectory = workDir.get().getAsFile();
 
         try (PrintWriter log = new PrintWriter(hasLog ? new FileWriter(logFile) : NullWriter.DEFAULT, true)) {
-            getProject().javaexec(spec -> {
+            getProject().getProviders().javaexec(spec -> {
                 spec.setExecutable(getEffectiveExecutable());
                 spec.setDebug(debug);
                 spec.setArgs(args);
@@ -139,7 +139,7 @@ public abstract class JarExec extends DefaultTask {
                     @Override
                     public void write(int b) { log.write(b); }
                 });
-            }).rethrowFailure().assertNormalExitValue();
+            }).getResult().get().rethrowFailure().assertNormalExitValue();
         }
 
         if (hasLog) {

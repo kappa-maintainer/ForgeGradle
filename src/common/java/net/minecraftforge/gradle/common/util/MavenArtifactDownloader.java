@@ -11,7 +11,7 @@ import net.minecraftforge.artifactural.gradle.GradleRepositoryAdapter;
 import net.minecraftforge.artifactural.gradle.RepositoryContentUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.http.client.utils.URIBuilder;
+import org.apache.hc.core5.net.URIBuilder;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.gradle.api.Project;

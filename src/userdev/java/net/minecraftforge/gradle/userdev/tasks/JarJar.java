@@ -259,10 +259,6 @@ public abstract class JarJar extends Jar {
     }
 
     private boolean isObfuscated(final Dependency dependency) {
-        if (dependency instanceof ProjectDependency) {
-            final ProjectDependency projectDependency = (ProjectDependency) dependency;
-            return projectDependency.getDependencyProject().getPlugins().hasPlugin(UserDevPlugin.class);
-        }
 
         return Objects.requireNonNull(dependency.getVersion()).contains("_mapped_");
     }
