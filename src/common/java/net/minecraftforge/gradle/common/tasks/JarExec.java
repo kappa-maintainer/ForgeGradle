@@ -131,6 +131,7 @@ public abstract class JarExec extends DefaultTask {
                 log.println("Main class: " + mainClass);
                 log.println("====================================");
 
+                /*
                 spec.setStandardOutput(new OutputStream() {
                     @Override
                     public void flush() { log.flush(); }
@@ -139,6 +140,7 @@ public abstract class JarExec extends DefaultTask {
                     @Override
                     public void write(int b) { log.write(b); }
                 });
+                */
             }).getResult().get().rethrowFailure().assertNormalExitValue();
         }
 
