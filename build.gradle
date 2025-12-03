@@ -102,15 +102,15 @@ dependencies {
 gradlePlugin {
     plugins {
         mcp {
-            id = 'net.minecraftforge.gradle.mcp'
+            id = 'top.outlands.gradle.mcp'
             implementationClass = 'net.minecraftforge.gradle.mcp.MCPPlugin'
         }
         patcher {
-            id = 'net.minecraftforge.gradle.patcher'
+            id = 'top.outlands.gradle.patcher'
             implementationClass = 'net.minecraftforge.gradle.patcher.PatcherPlugin'
         }
         userdev {
-            id = 'net.minecraftforge.gradle'
+            id = 'top.outlands.gradle'
             implementationClass = 'net.minecraftforge.gradle.userdev.UserDevPlugin'
         }
     }
@@ -118,22 +118,22 @@ gradlePlugin {
 }
 
 publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'top.outlands.gradle'
+            artifactId = 'ForgeGradle'
+            version = project.version
+            from components.java
+        }
+    }
     repositories {
         maven {
-            name = "outlandsReleases"
-            url = "https://maven.outlands.top/releases"
+            name = 'outlandsReleases'
+            url = 'https://maven.outlands.top/releases'
             credentials(PasswordCredentials)
             authentication {
                 basic(BasicAuthentication)
             }
-        }
-    }
-    publications {
-        maven(MavenPublication) {
-            groupId = "top.outlands.gradle"
-            artifactId = "ForgeGradle"
-            version = project.version
-            from components.java
         }
     }
 }
