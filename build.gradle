@@ -53,6 +53,10 @@ tasks.named('sourcesJar', Jar).configure {
 repositories {
     mavenLocal()
     maven gradleutils.forgeMaven
+    maven {
+        name "outlandsReleases"
+        url "https://maven.outlands.top/releases"
+    }
 }
 
 license {
@@ -74,7 +78,7 @@ dependencies {
     commonImplementation 'com.google.code.gson:gson:2.13.2'
     commonImplementation 'com.google.guava:guava:33.5.0-jre'
     commonImplementation 'de.siegmar:fastcsv:2.2.1'
-    commonImplementation('net.minecraftforge:artifactural:3.0.20') {
+    commonImplementation('top.outlands:artifactural:3.0.2') {
         transitive = false
     }
     commonImplementation('net.minecraftforge:unsafe:0.2.0') {
@@ -126,7 +130,7 @@ publishing {
     }
     publications {
         maven(MavenPublication) {
-            groupId = "net.minecraftforge.gradle"
+            groupId = "top.outlands.gradle"
             artifactId = "ForgeGradle"
             version = project.version
             from components.java
