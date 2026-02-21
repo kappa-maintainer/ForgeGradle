@@ -67,7 +67,7 @@ license {
 }
 
 tasks.named('wrapper', Wrapper).configure {
-    gradleVersion = '9.2'
+    gradleVersion = '9.3'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -81,7 +81,7 @@ dependencies {
     commonImplementation('top.outlands:artifactural:3.0.4') {
         transitive = false
     }
-    commonImplementation('net.minecraftforge:unsafe:0.2.0') {
+    commonImplementation('net.minecraftforge:unsafe:0.9.2') {
         transitive = false
     }
     commonImplementation 'org.apache.maven:maven-artifact:3.9.11'

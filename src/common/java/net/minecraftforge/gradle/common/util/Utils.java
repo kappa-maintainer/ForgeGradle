@@ -91,7 +91,7 @@ public class Utils {
     public static final String SPECIALSOURCE           = "net.md-5:SpecialSource:1.11.2:shaded";
     public static final String BINPATCHER              = art("binarypatcher",           "1.2.0",  "fatjar");
     public static final String ACCESSTRANSFORMER       = art("accesstransformers",      "8.2.1",  "fatjar");
-    public static final String FART                    = art("ForgeAutoRenamingTool",   "1.0.6",  "all"   );
+    public static final String FART                    = "net.neoforged:AutoRenamingTool:2.0.18:all"; //art("ForgeAutoRenamingTool",   "1.0.6",  "all"   );
     public static final String SRG2SOURCE              = art("Srg2Source",              "8.0.9",  "fatjar");
     public static final String SIDESTRIPPER            = art("mergetool",               "1.1.7",  "fatjar");
     public static final String INSTALLERTOOLS          = art("installertools",          "1.4.4",  "fatjar");
@@ -100,7 +100,7 @@ public class Utils {
     public static final long ZIPTIME = 628041600000L;
     public static final TimeZone GMT = TimeZone.getTimeZone("GMT");
 
-    public static final Action<? super MavenArtifactRepository> forgeMaven() {
+    public static Action<? super MavenArtifactRepository> forgeMaven() {
         return e -> {
             e.setUrl(Utils.FORGE_MAVEN);
             e.metadataSources(m -> {
@@ -111,7 +111,7 @@ public class Utils {
         };
     }
 
-    public static final Action<? super MavenArtifactRepository> mojangMaven() {
+    public static Action<? super MavenArtifactRepository> mojangMaven() {
         return e -> {
             e.setUrl(Utils.MOJANG_MAVEN);
             e.metadataSources(MetadataSources::artifact);
@@ -119,13 +119,13 @@ public class Utils {
         };
     }
 
-    public static final Action<? super MavenArtifactRepository> filterForge() {
+    public static Action<? super MavenArtifactRepository> filterForge() {
         return e -> {
             e.mavenContent(c -> c.excludeGroup("net.minecraftforge"));
         };
     }
 
-    private static final String art(String name, String ver, String classifier) {
+    private static String art(String name, String ver, String classifier) {
         return "net.minecraftforge:" + name + ':' + ver + ':' + classifier;
     }
 

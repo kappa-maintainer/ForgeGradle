@@ -22,6 +22,7 @@ import codechicken.diffpatch.util.archiver.ArchiveFormat;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.zip.ZipOutputStream;
 
 /**
@@ -33,13 +34,12 @@ public abstract class BakePatches extends DefaultTask {
         getLineEnding().convention(System.lineSeparator());
     }
 
-    @SuppressWarnings("deprecation")
     @TaskAction
     public void doTask() throws IOException {
         File output = getOutput().get().getAsFile();
         ArchiveFormat outputFormat = ArchiveFormat.findFormat(output.getName());
         if (!getInput().isPresent()) {
-            try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(output))) {
+            try (ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(output.toPath()))) {
                 // Open and close to make empty zip
                 // This is a dumb workaround so :clean:userdevJar doesn't explode
             }
