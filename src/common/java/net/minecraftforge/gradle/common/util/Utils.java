@@ -92,7 +92,7 @@ public class Utils {
     public static final String BINPATCHER              = art("binarypatcher",           "1.2.0",  "fatjar");
     public static final String ACCESSTRANSFORMER       = art("accesstransformers",      "8.2.1",  "fatjar");
     public static final String FART                    = "net.neoforged:AutoRenamingTool:2.0.18:all"; //art("ForgeAutoRenamingTool",   "1.0.6",  "all"   );
-    public static final String SRG2SOURCE              = art("Srg2Source",              "8.0.9",  "fatjar");
+    public static final String SRG2SOURCE              = art("Srg2Source",              "8.2.0",  "fatjar");
     public static final String SIDESTRIPPER            = art("mergetool",               "1.1.7",  "fatjar");
     public static final String INSTALLERTOOLS          = art("installertools",          "1.4.4",  "fatjar");
     public static final String JARCOMPATIBILITYCHECKER = art("JarCompatibilityChecker", "0.1.28", "all"   );
