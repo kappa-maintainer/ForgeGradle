@@ -41,7 +41,6 @@ import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.artifacts.DependencySet;
 import org.gradle.api.artifacts.ExternalModuleDependency;
-import org.gradle.api.artifacts.repositories.MavenArtifactRepository.MetadataSources;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.SourceDirectorySet;
 import org.gradle.api.logging.Logger;
@@ -256,6 +255,7 @@ public class UserDevPlugin implements Plugin<Project> {
                     project.getRepositories().mavenCentral(Utils.filterForge()); //Needed for MCP Deps; we do not publish any artifacts to maven central
                 }
                 project.getRepositories().maven(Utils.forgeMaven());
+                project.getRepositories().maven(Utils.outlandsMaven());
             }
 
             remapper.attachMappings(extension.getMappings().get());

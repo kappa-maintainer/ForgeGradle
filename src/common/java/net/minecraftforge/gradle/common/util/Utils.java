@@ -88,11 +88,12 @@ public class Utils {
                                                           //manifest doesn't include sha1's so we use this for the per-version json as well.
     public static final String FORGE_MAVEN             = "https://maven.minecraftforge.net/";
     public static final String MOJANG_MAVEN            = "https://libraries.minecraft.net/";
+    public static final String OUTLANDS_MAVEN          = "https://maven.outlands.top/release/";
     public static final String SPECIALSOURCE           = "net.md-5:SpecialSource:1.11.2:shaded";
     public static final String BINPATCHER              = art("binarypatcher",           "1.2.0",  "fatjar");
     public static final String ACCESSTRANSFORMER       = art("accesstransformers",      "8.2.1",  "fatjar");
     public static final String FART                    = "net.neoforged:AutoRenamingTool:2.0.18:all"; //art("ForgeAutoRenamingTool",   "1.0.6",  "all"   );
-    public static final String SRG2SOURCE              = art("Srg2Source",              "8.2.0",  "fatjar");
+    public static final String SRG2SOURCE              = "top.outlands:Srg2Source:9.0.1:fatjar";
     public static final String SIDESTRIPPER            = art("mergetool",               "1.1.7",  "fatjar");
     public static final String INSTALLERTOOLS          = art("installertools",          "1.4.4",  "fatjar");
     public static final String JARCOMPATIBILITYCHECKER = art("JarCompatibilityChecker", "0.1.28", "all"   );
@@ -103,6 +104,17 @@ public class Utils {
     public static Action<? super MavenArtifactRepository> forgeMaven() {
         return e -> {
             e.setUrl(Utils.FORGE_MAVEN);
+            e.metadataSources(m -> {
+                m.gradleMetadata();
+                m.mavenPom();
+                m.artifact();
+            });
+        };
+    }
+
+    public static Action<? super MavenArtifactRepository> outlandsMaven() {
+        return e -> {
+            e.setUrl(Utils.OUTLANDS_MAVEN);
             e.metadataSources(m -> {
                 m.gradleMetadata();
                 m.mavenPom();
