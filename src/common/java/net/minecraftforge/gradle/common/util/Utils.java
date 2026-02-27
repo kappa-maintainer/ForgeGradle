@@ -88,7 +88,7 @@ public class Utils {
                                                           //manifest doesn't include sha1's so we use this for the per-version json as well.
     public static final String FORGE_MAVEN             = "https://maven.minecraftforge.net/";
     public static final String MOJANG_MAVEN            = "https://libraries.minecraft.net/";
-    public static final String OUTLANDS_MAVEN          = "https://maven.outlands.top/release/";
+    public static final String OUTLANDS_MAVEN          = "https://maven.outlands.top/releases/";
     public static final String SPECIALSOURCE           = "net.md-5:SpecialSource:1.11.2:shaded";
     public static final String BINPATCHER              = art("binarypatcher",           "1.2.0",  "fatjar");
     public static final String ACCESSTRANSFORMER       = art("accesstransformers",      "8.2.1",  "fatjar");
