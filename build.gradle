@@ -22,7 +22,7 @@ sourceSets {
 }
 
 java {
-    toolchain.languageVersion = JavaLanguageVersion.of(8)
+    toolchain.languageVersion = JavaLanguageVersion.of(25)
     withSourcesJar()
 }
 
@@ -67,7 +67,7 @@ license {
 }
 
 tasks.named('wrapper', Wrapper).configure {
-    gradleVersion = '9.3'
+    gradleVersion = '9.6'
     distributionType = Wrapper.DistributionType.ALL
 }
 
