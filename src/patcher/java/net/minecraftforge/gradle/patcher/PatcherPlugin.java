@@ -257,7 +257,7 @@ public class PatcherPlugin implements Plugin<Project> {
         universalJar.configure(task -> {
             task.dependsOn(filterNew);
             task.from(project.zipTree(filterNew.flatMap(FilterNewJar::getOutput)));
-            task.from(javaConv.getSourceSets().named(SourceSet.MAIN_SOURCE_SET_NAME).map(SourceSet::getResources));
+            task.from(project.getTasks().named("processResources"));
             task.getArchiveClassifier().set("universal");
         });
 
