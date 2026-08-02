@@ -60,6 +60,7 @@ public class RunConfig extends GroovyObjectSupport implements Serializable {
 
     private Map<String, String> env, props, tokens;
     private Map<String, Supplier<String>> lazyTokens;
+    private List<String> classpathExclusions;
 
     public RunConfig(final Project project, final String name) {
         this.project = project;
@@ -267,6 +268,28 @@ public class RunConfig extends GroovyObjectSupport implements Serializable {
         }
 
         return props;
+    }
+
+    /**
+     * Excludes files matching the supplied regular expressions from this run's
+     * resolved classpaths. This is intentionally run-local: the dependency
+     * configurations remain unchanged for compilation and publishing.
+     */
+    public void classpathExclude(String... patterns) {
+        getClasspathExclusions().addAll(Arrays.asList(patterns));
+    }
+
+    public List<String> getClasspathExclusions() {
+        if (classpathExclusions == null) {
+            classpathExclusions = new ArrayList<>();
+        }
+
+        return classpathExclusions;
+    }
+
+    public boolean isClasspathExcluded(File file) {
+        return getClasspathExclusions().stream()
+                .anyMatch(pattern -> file.getName().matches(pattern) || file.getAbsolutePath().matches(pattern));
     }
 
     public void ideaModule(String value) {
@@ -519,6 +542,14 @@ public class RunConfig extends GroovyObjectSupport implements Serializable {
             other.props.forEach(overwrite
                     ? (key, value) -> getProperties().put(key, value)
                     : (key, value) -> getProperties().putIfAbsent(key, value));
+        }
+
+        if (other.classpathExclusions != null) {
+            List<String> exclusions = new ArrayList<>(other.classpathExclusions);
+            if (!overwrite && this.classpathExclusions != null) {
+                exclusions.addAll(this.classpathExclusions);
+            }
+            this.classpathExclusions = exclusions.stream().distinct().collect(Collectors.toCollection(ArrayList::new));
         }
 
         if (other.mods != null) {

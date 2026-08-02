@@ -61,6 +61,16 @@ public abstract class PatcherExtension extends MinecraftExtension {
         });
     }
 
+    /**
+     * Removes the legacy automatically-created run configurations. Patcher
+     * projects that provide their own Cleanroom/Foundation entry points should
+     * not expose the old MCP bootstrap runs.
+     */
+    public void removeDefaultRuns() {
+        getRuns().removeIf(run -> run.getName().equals(getProject().getName() + "_client")
+                || run.getName().equals(getProject().getName() + "_server"));
+    }
+
     public abstract Property<Project> getParent();
 
     public abstract RegularFileProperty getCleanSrc();

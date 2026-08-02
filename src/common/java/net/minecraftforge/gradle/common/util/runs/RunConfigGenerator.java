@@ -156,6 +156,9 @@ public abstract class RunConfigGenerator {
         	return Suppliers.memoize(() -> paths.distinct().collect(Collectors.joining(File.pathSeparator)));
         });
 
+        minecraftArtifacts = filterClasspath(runConfig, minecraftArtifacts);
+        runtimeClasspathArtifacts = filterClasspath(runConfig, runtimeClasspathArtifacts);
+
         Supplier<String> runtimeClasspath = tokens.compute("runtime_classpath", makeClasspathToken(runtimeClasspathArtifacts));
         Supplier<String> minecraftClasspath = tokens.compute("minecraft_classpath", makeClasspathToken(minecraftArtifacts));
 
@@ -181,6 +184,13 @@ public abstract class RunConfigGenerator {
                 Strings.isNullOrEmpty(value) || "dummy".equals(value) ? "{source_roots}" : value);
 
         return tokens;
+    }
+
+    private static FileCollection filterClasspath(RunConfig runConfig, FileCollection classpath) {
+        if (runConfig.getClasspathExclusions().isEmpty())
+            return classpath;
+
+        return classpath.filter(file -> !runConfig.isClasspathExcluded(file));
     }
 
     private static BiFunction<String, Supplier<String>, Supplier<String>> makeClasspathToken(FileCollection classpath) {

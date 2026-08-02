@@ -51,7 +51,10 @@ abstract class MinecraftRunTask extends JavaExec {
         runConfig.getEnvironment().forEach((key, value) -> this.environment(key, runConfig.replace(updatedTokens, value)));
         runConfig.getProperties().forEach((key, value) -> this.systemProperty(key, runConfig.replace(updatedTokens, value)));
 
-        runConfig.getAllSources().stream().map(SourceSet::getRuntimeClasspath).forEach(this::classpath);
+        runConfig.getAllSources().stream()
+                .map(SourceSet::getRuntimeClasspath)
+                .map(classpath -> classpath.filter(file -> !runConfig.isClasspathExcluded(file)))
+                .forEach(this::classpath);
 
         super.exec();
     }

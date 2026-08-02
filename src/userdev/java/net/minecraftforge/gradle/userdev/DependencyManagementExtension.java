@@ -184,6 +184,7 @@ public class DependencyManagementExtension extends GroovyObjectSupport {
 
         minecraftExtension.getRuns().configureEach(runConfig -> {
             Supplier<String> librariesSupplier = () -> configuration.copyRecursive().resolve().stream()
+                    .filter(file -> !runConfig.isClasspathExcluded(file))
                     .map(File::getAbsolutePath)
                     .collect(Collectors.joining(File.pathSeparator));
             Supplier<String> oldToken = runConfig.getLazyTokens().get("minecraft_classpath");
