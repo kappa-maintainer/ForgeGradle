@@ -159,8 +159,8 @@ public abstract class RunConfigGenerator {
         minecraftArtifacts = filterClasspath(runConfig, minecraftArtifacts);
         runtimeClasspathArtifacts = filterClasspath(runConfig, runtimeClasspathArtifacts);
 
-        Supplier<String> runtimeClasspath = tokens.compute("runtime_classpath", makeClasspathToken(runtimeClasspathArtifacts));
-        Supplier<String> minecraftClasspath = tokens.compute("minecraft_classpath", makeClasspathToken(minecraftArtifacts));
+        Supplier<String> runtimeClasspath = tokens.compute("runtime_classpath", makeClasspathToken(runtimeClasspathArtifacts, minecraftArtifacts));
+        Supplier<String> minecraftClasspath = tokens.compute("minecraft_classpath", makeClasspathToken(minecraftArtifacts, minecraftArtifacts));
 
         File classpathFolder = new File(project.getLayout().getBuildDirectory().getAsFile().get(), "classpath");
         BinaryOperator<String> classpathFileWriter = (filename, classpath) -> {
@@ -193,21 +193,48 @@ public abstract class RunConfigGenerator {
         return classpath.filter(file -> !runConfig.isClasspathExcluded(file));
     }
 
-    private static BiFunction<String, Supplier<String>, Supplier<String>> makeClasspathToken(FileCollection classpath) {
+    private static BiFunction<String, Supplier<String>, Supplier<String>> makeClasspathToken(FileCollection classpath,
+            FileCollection vanillaClasspath) {
         return (key, supplier) -> Suppliers.memoize(() -> {
-            String resolvedClasspath = getResolvedClasspath(classpath.getFiles());
+            String resolvedClasspath = getResolvedClasspath(classpath.getFiles(), vanillaClasspath.getFiles());
             if (supplier == null) return resolvedClasspath;
+
             String oldCp = supplier.get();
             if (Strings.isNullOrEmpty(oldCp)) return resolvedClasspath;
-            if (Strings.isNullOrEmpty(resolvedClasspath)) return oldCp;
-            return String.join(File.pathSeparator, oldCp, resolvedClasspath);
+            if (Strings.isNullOrEmpty(resolvedClasspath)) return orderClasspath(oldCp, vanillaClasspath.getFiles());
+            return orderClasspath(String.join(File.pathSeparator, oldCp, resolvedClasspath), vanillaClasspath.getFiles());
         });
     }
 
     @Nonnull
-    private static String getResolvedClasspath(Set<File> artifacts) {
-        return artifacts.stream()
+    private static String getResolvedClasspath(Set<File> artifacts, Set<File> vanillaArtifacts) {
+        return orderClasspath(artifacts, vanillaArtifacts).stream()
                 .map(File::getAbsolutePath)
+                .collect(Collectors.joining(File.pathSeparator));
+    }
+
+    /**
+     * Keep the resolved Gradle order within each group, but make the important
+     * loader boundary explicit: project/tooling libraries first, Vanilla last.
+     */
+    public static List<File> orderClasspath(Collection<File> artifacts, Collection<File> vanillaArtifacts) {
+        Set<String> vanillaPaths = vanillaArtifacts.stream()
+                .map(File::getAbsolutePath)
+                .collect(Collectors.toSet());
+        return Stream.concat(
+                artifacts.stream().filter(file -> !vanillaPaths.contains(file.getAbsolutePath())),
+                artifacts.stream().filter(file -> vanillaPaths.contains(file.getAbsolutePath())))
+                .collect(Collectors.toList());
+    }
+
+    private static String orderClasspath(String classpath, Collection<File> vanillaArtifacts) {
+        List<String> paths = Arrays.asList(classpath.split(File.pathSeparator));
+        Set<String> vanillaPaths = vanillaArtifacts.stream()
+                .map(File::getAbsolutePath)
+                .collect(Collectors.toSet());
+        return Stream.concat(
+                paths.stream().filter(path -> !vanillaPaths.contains(new File(path).getAbsolutePath())),
+                paths.stream().filter(path -> vanillaPaths.contains(new File(path).getAbsolutePath())))
                 .collect(Collectors.joining(File.pathSeparator));
     }
 

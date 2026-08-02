@@ -8,6 +8,7 @@ package net.minecraftforge.gradle.common.util.runs;
 import net.minecraftforge.gradle.common.util.RunConfig;
 import org.gradle.api.Project;
 import org.gradle.api.file.ConfigurableFileCollection;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
@@ -20,6 +21,7 @@ import org.gradle.work.DisableCachingByDefault;
 
 import java.io.File;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 
 @DisableCachingByDefault(because = "Running Minecraft cannot be cached")
@@ -51,10 +53,12 @@ abstract class MinecraftRunTask extends JavaExec {
         runConfig.getEnvironment().forEach((key, value) -> this.environment(key, runConfig.replace(updatedTokens, value)));
         runConfig.getProperties().forEach((key, value) -> this.systemProperty(key, runConfig.replace(updatedTokens, value)));
 
-        runConfig.getAllSources().stream()
+        Set<File> vanillaArtifacts = this.getMinecraftArtifacts().getFiles();
+        FileCollection sourceClasspath = project.files(runConfig.getAllSources().stream()
                 .map(SourceSet::getRuntimeClasspath)
-                .map(classpath -> classpath.filter(file -> !runConfig.isClasspathExcluded(file)))
-                .forEach(this::classpath);
+                .toArray());
+        sourceClasspath = sourceClasspath.filter(file -> !runConfig.isClasspathExcluded(file));
+        this.classpath(project.files(RunConfigGenerator.orderClasspath(sourceClasspath.getFiles(), vanillaArtifacts)));
 
         super.exec();
     }
